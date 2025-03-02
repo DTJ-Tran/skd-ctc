@@ -44,7 +44,7 @@ phoneme_list = [
     "ow*", "ay", "w", "ey", "aw*", "l", "zh*", "ih", "v", "oy", 
     "aa*", "t*", "jh", "b*", "w*", "ow", "ng", "b", "ch", "dh*", 
     "y", "er", "v*", "ah", "sh", "aa", "g", "d", "dh", "r*", "ae*", 
-    "ey*", "uh", "r", "g*", "s", "z", "jh*", " "
+    "ey*", "uh", "r", "g*", "s", "z", "jh*", " ", ""
 ]
 decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
