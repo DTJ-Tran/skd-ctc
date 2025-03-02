@@ -1,0 +1,10 @@
+pandas
+polars
+tqdm
+torch
+numpy
+transformers
+librosa
+jiwer
+pyctcdecode
+comet-ml
