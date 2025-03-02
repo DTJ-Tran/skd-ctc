@@ -15,14 +15,17 @@ feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
 gc.collect()
-df_dev = pd.read_csv("./skd-ctc/dataset/test.csv")
+current_dir = os.getcwd()
+target_test = os.path.join(current_dir, "skd-ctc", "dataset", "test.csv")
+df_dev = pd.read_csv(target_test)
 
-save_path = "./skd-ctc/result.csv"
+save_path = os.path.join(current_dir, "skd-ctc", "result.csv")
 model = Hubert.from_pretrained(
     'facebook/hubert-base-ls960',
 )
-model.load_state_dict(torch.load("./model.pth/model-data/comet-torch-model.pth"))
 
+model_path = os.path.join("./model.pth", "model-data", "comet-torch-model.pth")
+model.load_state_dict(torch.load(model_path))
 
 # for param in model.feature_extractor.parameters():
 #     param.requires_grad = False
@@ -72,20 +75,3 @@ train = pd.DataFrame([PATH, TRANSCRIPT, PREDICT])
 train = train.transpose()
 train.columns=['Path', 'Transcript', 'Predict'] 
 train.to_csv(save_path)
-
-# Currently: THIS IS ASR (currently using text (character)) ->  (to the Phoneme)
-# Suggestion: Print the Dim to understanf the behavior
-# THE GOAL - Using the data
-# Deadline : Monday 
-# Discussion with Khanh 
-
-"""
-https://github.com/huutuongtu/Refining-Linguistic-Information-Utilization-MDD - the Code
-https://drive.google.com/file/d/1UnXgktrlF8ORT-rMey_bitPOlbaP1ond/view?usp=sharing - The Dataset
-Using HuBert (the skd-ctc)
-
-Dataset: 1 (L2-) &  TIMIT (Check the CSV)
-
-=> Paper: https://arxiv.org/pdf/2110.07274
-
-"""
