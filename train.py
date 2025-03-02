@@ -53,8 +53,13 @@ def collate_fn(batch):
     return input_values, cols['transcript'], cols['outputlengths']
 
 #dataset should contain 2 cols, 1 is Path contain absolute path of audio and 1 is Transcript contain text transcript of audio 
-df_train = pd.read_csv('./skd-ctc/dataset/train.csv')
-df_dev = pd.read_csv("./skd-ctc/dataset/dev.csv")
+current_dir = os.getcwd()
+target_train = os.path.join(current_dir, "skd-ctc", "dataset", "train.csv")
+target_dev = os.path.join(current_dir, "skd-ctc", "dataset", "dev.csv")
+df_train = pd.read_csv(target_train)
+df_dev = pd.read_csv(target_dev)
+
+
 
 from comet_ml import start
 from comet_ml.integration.pytorch import log_model
