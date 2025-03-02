@@ -6,6 +6,7 @@ import librosa
 import os
 
 file_path = "./skd-ctc/vocab.json"
+dict_vocab = dict()
 if not os.path.exists(file_path):
   print(f"Error: File '{file_path}' not found.")
 else:
