@@ -54,6 +54,7 @@ def collate_fn(batch):
 
 #dataset should contain 2 cols, 1 is Path contain absolute path of audio and 1 is Transcript contain text transcript of audio 
 current_dir = os.getcwd()
+print("current_dir: ", current_dir)
 target_train = os.path.join(current_dir, "skd-ctc", "dataset", "train.csv")
 target_dev = os.path.join(current_dir, "skd-ctc", "dataset", "dev.csv")
 df_train = pd.read_csv(target_train)
