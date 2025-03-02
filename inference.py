@@ -44,7 +44,14 @@ if not os.path.exists(file_path):
 else:
   with open(file_path) as f:
       dict_vocab = json.load(f)
+# Ensure the blank token exists
+if "<blank>" not in dict_vocab:
+    dict_vocab["<blank>"] = len(dict_vocab)  # Assign next available index
+
 phoneme_list = list(dict_vocab.keys())
+
+
+
 decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
                               )
