@@ -37,15 +37,14 @@ PATH = []
 TRANSCRIPT = []
 PREDICT = []
 
-phoneme_list = [
-    "ae", "m", "k", "eh*", "n", "aw", "ao*", "iy", "er*", "z*", 
-    "uw*", "f", "p", "d*", "ao", "l*", "uw", "hh*", "t", "ah*", 
-    "y*", "n*", "th", "hh", "err", "uh*", "p*", "zh", "k*", "eh", 
-    "ow*", "ay", "w", "ey", "aw*", "l", "zh*", "ih", "v", "oy", 
-    "aa*", "t*", "jh", "b*", "w*", "ow", "ng", "b", "ch", "dh*", 
-    "y", "er", "v*", "ah", "sh", "aa", "g", "d", "dh", "r*", "ae*", 
-    "ey*", "uh", "r", "g*", "s", "z", "jh*", " ", ""
-]
+file_path = "./skd-ctc/vocab.json"
+dict_vocab = dict()
+if not os.path.exists(file_path):
+  print(f"Error: File '{file_path}' not found.")
+else:
+  with open(file_path) as f:
+      dict_vocab = json.load(f)
+phoneme_list = list(dict_vocab.keys())
 decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
                               )
