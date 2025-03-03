@@ -73,7 +73,7 @@ experiment = start(
 
 
 train_dataset = ASR_Dataset(df_train)
-batch_size = 32
+batch_size = 50
 train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 # Grouping 2 data-point 
 # Pytorch: https://www.youtube.com/watch?v=tHL5STNJKag
@@ -90,7 +90,7 @@ decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
                               )
 
-num_epoch=100 # initial 200
+num_epoch=50 # initial 200
 temperature = 1
 optimizer = torch.optim.AdamW(model.parameters(), lr=3e-5)
 warmup_steps = num_epoch//10
