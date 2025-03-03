@@ -73,7 +73,7 @@ experiment = start(
 
 
 train_dataset = ASR_Dataset(df_train)
-batch_size = 50
+batch_size = 8
 train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
 # Grouping 2 data-point 
 # Pytorch: https://www.youtube.com/watch?v=tHL5STNJKag
