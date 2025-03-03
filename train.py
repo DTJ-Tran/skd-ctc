@@ -85,25 +85,17 @@ model = Hubert.from_pretrained(
 
 model = model.to(device)
 
-phoneme_list = [
-    "ae", "m", "k", "eh*", "n", "aw", "ao*", "iy", "er*", "z*", 
-    "uw*", "f", "p", "d*", "ao", "l*", "uw", "hh*", "t", "ah*", 
-    "y*", "n*", "th", "hh", "err", "uh*", "p*", "zh", "k*", "eh", 
-    "ow*", "ay", "w", "ey", "aw*", "l", "zh*", "ih", "v", "oy", 
-    "aa*", "t*", "jh", "b*", "w*", "ow", "ng", "b", "ch", "dh*", 
-    "y", "er", "v*", "ah", "sh", "aa", "g", "d", "dh", "r*", "ae*", 
-    "ey*", "uh", "r", "g*", "s", "z", "jh*", " "
-]# Char -> Num
+phoneme_list = ['ae', 'm', 'k', 'eh*', 'n', 'aw', 'ao*', 'iy', 'er*', 'z*', 'uw*', 'f', 'p', 'd*', 'ao', 'l*', 'uw', 'hh*', 't', 'ah*', 'y*', 'n*', 'th', 'hh', 'err', 'uh*', 'p*', 'zh', 'k*', 'eh', 'ow*', 'ay', 'w', 'ey', 'aw*', 'l', 'zh*', 'ih', 'v', 'oy', 'aa*', 't*', 'jh', 'b*', 'w*', 'ow', 'ng', 'b', 'ch', 'dh*', 'y', 'er', 'v*', 'ah', 'sh', 'aa', 'g', 'd', 'dh', 'r*', 'ae*', 'ey*', 'uh', 'r', 'g*', 's', 'z', 'jh*', ' ']
 decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
                               )
 
-num_epoch=50 # initial 200
+num_epoch=10 # initial 200
 temperature = 1
 optimizer = torch.optim.AdamW(model.parameters(), lr=3e-5)
 warmup_steps = num_epoch//10
 scheduler = CosineAnnealingLR(optimizer, T_max=num_epoch - warmup_steps)
-ctc_loss = nn.CTCLoss(blank = 0)
+ctc_loss = nn.CTCLoss(blank = 68)
 
 hyper_params = {
   "batch_size" : batch_size,
