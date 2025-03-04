@@ -85,7 +85,7 @@ model = Hubert.from_pretrained(
 
 model = model.to(device)
 
-phoneme_list = ['ae ', 'm ', 'k ', 'eh* ', 'n ', 'aw ', 'ao* ', 'iy ', 'er* ', 'z* ', 'uw* ', 'f ', 'p ', 'd* ', 'ao ', 'l* ', 'uw ', 'hh* ', 't ', 'ah* ', 'y* ', 'n* ', 'th ', 'hh ', 'err ', 'uh* ', 'p* ', 'zh ', 'k* ', 'eh ', 'ow* ', 'ay ', 'w ', 'ey ', 'aw* ', 'l ', 'zh* ', 'ih ', 'v ', 'oy ', 'aa* ', 't* ', 'jh ', 'b* ', 'w* ', 'ow ', 'ng ', 'b ', 'ch ', 'dh* ', 'y ', 'er ', 'v* ', 'ah ', 'sh ', 'aa ', 'g ', 'd ', 'dh ', 'r* ', 'ae* ', 'ey* ', 'uh ', 'r ', 'g* ', 's ', 'z ', 'jh* ', '']
+phoneme_list = ['ae ', 'm ', 'k ', 'eh* ', 'n ', 'aw ', 'ao* ', 'iy ', 'er* ', 'z* ', 'uw* ', 'f ', 'p ', 'd* ', 'ao ', 'l* ', 'uw ', 'hh* ', 't ', 'ah* ', 'y* ', 'n* ', 'th ', 'hh ', 'err ', 'uh* ', 'p* ', 'zh ', 'k* ', 'eh ', 'ow* ', 'ay ', 'w ', 'ey ', 'aw* ', 'l ', 'zh* ', 'ih ', 'v ', 'oy ', 'aa* ', 't* ', 'jh ', 'b* ', 'w* ', 'ow ', 'ng ', 'b ', 'ch ', 'dh* ', 'y ', 'er ', 'v* ', 'ah ', 'sh ', 'aa ', 'g ', 'd ', 'dh ', 'r* ', 'ae* ', 'ey* ', 'uh ', 'r ', 'g* ', 's ', 'z ', 'jh* ', '0 ']
 decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
                               )
