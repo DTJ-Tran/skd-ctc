@@ -37,9 +37,9 @@ def collate_fn(batch):
           if len(row[1]) > max_col[1]:
               max_col[1] = len(row[1])
         cols = {'waveform':[], 'transcript':[], 'outputlengths':[]}
-        
+        padding_element = ''
         for row in batch: # Padding & Getting multiple Waves
-            pad_wav = np.concatenate([row[0], np.zeros(max_col[0] - row[0].shape[0])])  # Padding = the_longest - current-audio-size
+            pad_wav = np.concatenate([row[0], np.full(max_col[0] - row[0].shape[0]), padding_element])  # Padding = the_longest - current-audio-size
             cols['waveform'].append(pad_wav)
             cols['outputlengths'].append(len(row[1]))
             row[1].extend([0] * (max_col[1] - len(row[1])))
