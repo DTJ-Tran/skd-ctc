@@ -17,7 +17,7 @@ val_list = list(dict_vocab.values())
 
 def text_to_tensor(string_text):
     text = string_text
-    if not isinstance(string_text, str):  # Kiểm tra nếu không phải chuỗi
+    if not isinstance(string_text, str):  
         raise TypeError(f"Expected string, but got {type(string_text)} and got {string_text}")
     text_list = []
     # Split text into phonemes based on space
