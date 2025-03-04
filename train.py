@@ -90,7 +90,7 @@ decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
                               )
 
-num_epoch=20 # initial 200
+num_epoch=5 # initial 200
 temperature = 1
 optimizer = torch.optim.AdamW(model.parameters(), lr=3e-5)
 warmup_steps = num_epoch//10
@@ -191,7 +191,7 @@ for epoch in range(num_epoch):
         print("save_checkpoint...")
         min_wer = epoch_wer
         # Save model locally
-        checkpoint_path = 'checkpoint/checkpoint.pth'
+        checkpoint_path = './skd-ctc/checkpoint_model.pth'
         torch.save(model.state_dict(), checkpoint_path)
 
         experiment.log_model(
