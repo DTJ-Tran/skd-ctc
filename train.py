@@ -22,7 +22,8 @@ from comet_ml.integration.pytorch import log_model
 feature_extractor = Wav2Vec2FeatureExtractor(feature_size=1, sampling_rate=16000, padding_value=0.0, padding_side='right', do_normalize=True, return_attention_mask=False)
 min_wer = 100
 device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
-# torch.autograd.set_detect_anomaly(True)
+
+
 def scheduling_func(e, E=200, t=0.3):
     return min(max((e-1)/(E-1), t), 1-t)
 
@@ -59,7 +60,7 @@ target_train = os.path.join(current_dir, "skd-ctc", "dataset", "train.csv")
 target_dev = os.path.join(current_dir, "skd-ctc", "dataset", "dev.csv")
 df_train = pd.read_csv(target_train)
 df_dev = pd.read_csv(target_dev)
-
+batch_size = 8
 
 
 from comet_ml import start
@@ -73,10 +74,9 @@ experiment = start(
 
 
 train_dataset = ASR_Dataset(df_train)
-batch_size = 8
 train_loader = DataLoader(dataset=train_dataset, batch_size=batch_size, shuffle=True, collate_fn=collate_fn)
-# Grouping 2 data-point 
-# Pytorch: https://www.youtube.com/watch?v=tHL5STNJKag
+
+
 model = Hubert.from_pretrained(
     'facebook/hubert-base-ls960',
 )
@@ -85,17 +85,17 @@ model = Hubert.from_pretrained(
 
 model = model.to(device)
 
-phoneme_list = ['ae ', 'm ', 'k ', 'eh* ', 'n ', 'aw ', 'ao* ', 'iy ', 'er* ', 'z* ', 'uw* ', 'f ', 'p ', 'd* ', 'ao ', 'l* ', 'uw ', 'hh* ', 't ', 'ah* ', 'y* ', 'n* ', 'th ', 'hh ', 'err ', 'uh* ', 'p* ', 'zh ', 'k* ', 'eh ', 'ow* ', 'ay ', 'w ', 'ey ', 'aw* ', 'l ', 'zh* ', 'ih ', 'v ', 'oy ', 'aa* ', 't* ', 'jh ', 'b* ', 'w* ', 'ow ', 'ng ', 'b ', 'ch ', 'dh* ', 'y ', 'er ', 'v* ', 'ah ', 'sh ', 'aa ', 'g ', 'd ', 'dh ', 'r* ', 'ae* ', 'ey* ', 'uh ', 'r ', 'g* ', 's ', 'z ', 'jh* ', '0']
+phoneme_list = ['', 'm ', 'k ', 'eh* ', 'n ', 'aw ', 'ao* ', 'iy ', 'er* ', 'z* ', 'uw* ', 'f ', 'p ', 'd* ', 'ao ', 'l* ', 'uw ', 'hh* ', 't ', 'ah* ', 'y* ', 'n* ', 'th ', 'hh ', 'err ', 'uh* ', 'p* ', 'zh ', 'k* ', 'eh ', 'ow* ', 'ay ', 'w ', 'ey ', 'aw* ', 'l ', 'zh* ', 'ih ', 'v ', 'oy ', 'aa* ', 't* ', 'jh ', 'b* ', 'w* ', 'ow ', 'ng ', 'b ', 'ch ', 'dh* ', 'y ', 'er ', 'v* ', 'ah ', 'sh ', 'aa ', 'g ', 'd ', 'dh ', 'r* ', 'ae* ', 'ey* ', 'uh ', 'r ', 'g* ', 's ', 'z ', 'jh* ', 'ae ']
 decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
                               )
 
-num_epoch=5 # initial 200
+num_epoch=10 # initial 200
 temperature = 1
 optimizer = torch.optim.AdamW(model.parameters(), lr=3e-5)
 warmup_steps = num_epoch//10
 scheduler = CosineAnnealingLR(optimizer, T_max=num_epoch - warmup_steps)
-ctc_loss = nn.CTCLoss(blank = 68)
+ctc_loss = nn.CTCLoss(blank = 0)
 
 hyper_params = {
   "batch_size" : batch_size,
@@ -151,6 +151,7 @@ for epoch in range(num_epoch):
 
     # Log loss after every batch
     experiment.log_metric("batch_loss", loss.item())
+      
     # linear warmup lr
     if epoch < warmup_steps:
       lr = 3e-5 * (epoch + 1) / warmup_steps
@@ -158,12 +159,13 @@ for epoch in range(num_epoch):
           param_group['lr'] = lr  
     else:
       scheduler.step()
+        
     optimizer.zero_grad()
-
+    
 
   # Log average training loss for the epoch
   avg_loss = sum(running_loss) / len(running_loss)
-  experiment.log_metric("epoch_loss", avg_loss)
+  experiment.log_metric("avg_training_loss", avg_loss)
 
   print(f"Training loss: {sum(running_loss) / len(running_loss)}")
   if sum(running_loss) / len(running_loss)<=1: #ensure decode fast
@@ -199,9 +201,10 @@ for epoch in range(num_epoch):
           file_or_folder=checkpoint_path,
           metadata={"WER": min_wer, "epoch": epoch}
         )
-
+      
       print("wer checkpoint " + str(epoch) + ": " + str(epoch_wer))
       print("min_wer: " + str(min_wer))
+      experiment.log_metric("min_wer", min_wer)
 
 log_model(experiment, model=model, model_name="MDD_MODEL")
 # End the experiment
