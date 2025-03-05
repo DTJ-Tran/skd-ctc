@@ -90,7 +90,7 @@ decoder_ctc = build_ctcdecoder(
                               labels = phoneme_list,
                               )
 
-num_epoch=10 # initial 200
+num_epoch=50 # initial 200
 temperature = 1
 optimizer = torch.optim.AdamW(model.parameters(), lr=3e-5)
 warmup_steps = num_epoch//10
@@ -109,11 +109,11 @@ hyper_params = {
 experiment.log_parameters(hyper_params)
 
 for epoch in range(num_epoch):
-  #freeze model first 12.5% of the steps except linear
-  if epoch < num_epoch//8:
-    model.freeze()
-  else:
-    model.unfreeze()
+  # #freeze model first 12.5% of the steps except linear
+  # if epoch < num_epoch//8:
+  #   model.freeze()
+  # else:
+  model.unfreeze()
   model.train().to(device)
   experiment.set_epoch(epoch)  # Track the current epoch
   running_loss = []
@@ -122,9 +122,9 @@ for epoch in range(num_epoch):
     acoustic, labels, target_lengths = data # Collate_fn ref
     i_logits, logits= model(acoustic)
     
-    # Apply clamping to prevent extreme values that cause NaNs
-    logits = torch.clamp(logits, min=-10, max=10)
-    i_logits = torch.clamp(i_logits, min=-10, max=10)
+    # # Apply clamping to prevent extreme values that cause NaNs
+    # logits = torch.clamp(logits, min=-10, max=10)
+    # i_logits = torch.clamp(i_logits, min=-10, max=10)
     
 
     #skd
